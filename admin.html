@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الإدارة | معهد جسور اليمن للتدريب والتأهيل - ذمار</title>
+<meta name="description" content="معهد جسور اليمن للتدريب والتأهيل في ذمار - خلف سيتي ماكس الجديد، عمارة القوسي. دورات الحاسوب، الإنجليزية، الجرافيكس، الأمن السيبراني والبرمجة. شهادات معتمدة في أنحاء الجمهورية اليمنية.">
+<link rel="stylesheet" href="/assets/site.css">
+</head>
+<body>
+
+<!-- Header -->
+<header>
+  <div class="nav-container">
+    <a href="/" class="logo">
+      <img src="/assets/logo-transparent.png" alt="شعار معهد جسور اليمن">
+      <div class="logo-text">
+        <h1>معهد جسور اليمن</h1>
+        <span>للتدريب والتأهيل</span>
+      </div>
+    </a>
+    <button type="button" class="menu-toggle" onclick="toggleMenu()" aria-label="فتح قائمة التنقل" aria-controls="nav" aria-expanded="false">☰</button>
+    <nav id="nav" aria-label="التنقل الرئيسي">
+      <ul>
+        <li><a href="/">الرئيسية</a></li>
+        <li><a href="/#about">من نحن</a></li>
+        <li><a href="/departments">الأقسام</a></li>
+        <li><a href="/register">التسجيل</a></li>
+        <li><a href="/inquiries">الاستفسارات</a></li>
+        <li><a href="/lookup">الاستعلام والنتائج</a></li><li><a href="/admin">الإدارة</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main class="page-main portal"><div class="container"><div class="portal-heading"><span class="eyebrow">معهد جسور اليمن</span><h2 data-setting="adminTitle">إدارة المعهد</h2><p>إدارة الطلاب والمدفوعات والنتائج من مكان واحد</p></div>
+<div id="authBox" class="panel auth-panel"><h3>دخول الموظفين</h3><form id="loginForm"><div class="form-group"><label for="staffEmail">البريد الإلكتروني</label><input type="email" id="staffEmail" required autocomplete="username"></div><div class="form-group"><label for="staffPassword">كلمة المرور</label><input type="password" id="staffPassword" required autocomplete="current-password" minlength="6"></div><button class="btn btn-primary" name="action" value="login">دخول</button><button class="btn btn-secondary" name="action" value="signup">تفعيل الحساب لأول مرة</button><p class="feedback" role="status"></p></form><button class="text-button" id="recoverPassword">استعادة كلمة المرور بالبريد</button><p class="register-note">في أول استخدام: أدخل بريدك وكلمة المرور، ثم اضغط تفعيل الحساب وأكّد بريدك من الرسالة. الدخول متاح للحسابين المعتمدين فقط.</p></div>
+<div id="resetBox" class="panel auth-panel" hidden><form id="resetForm"><h3>تعيين كلمة المرور</h3><div class="form-group"><label for="newPassword">كلمة المرور الجديدة</label><input id="newPassword" type="password" minlength="6" required autocomplete="new-password"></div><button class="btn btn-primary">حفظ</button><p class="feedback" role="status"></p></form></div>
+<div id="dashboard" hidden><div class="dashboard-bar"><strong id="staffRole"></strong><button id="logout" class="btn btn-secondary">تسجيل الخروج</button></div><nav class="admin-tabs" aria-label="أقسام الإدارة"><button class="active" data-tab="studentsPanel">الطلاب والمسجلون</button><button data-tab="inquiriesPanel" data-director>الاستفسارات والنتائج</button><button data-tab="messagesPanel" data-director>الإشعارات والرسائل</button><button data-tab="settingsPanel" data-director>الموقع والأقسام والألوان</button></nav>
+<section id="studentsPanel" class="admin-section"><div class="panel"><div class="dashboard-bar"><h3>سجل الطلاب</h3><div><button class="btn btn-secondary" id="refreshStudents">تحديث</button> <a href="/api/staff/export" class="btn btn-primary" data-director>تصدير Excel</a></div></div><div id="studentStats" class="mini-stats"></div><div class="form-row"><div class="form-group"><label for="studentSearch">بحث بالاسم أو الرقم أو الهاتف</label><input type="search" id="studentSearch"></div><div class="form-group"><label for="paymentFilter">حالة الرسوم</label><select id="paymentFilter"><option value="">جميع الحالات</option><option value="waiting">في انتظار التسديد</option><option value="partial">مسدد جزئياً</option><option value="paid">مسدد الفاتورة</option><option value="unpriced">بانتظار تحديد الرسوم</option></select></div></div><p id="studentsFeedback" role="status"></p><div class="table-wrap"><table><thead><tr><th>الطالب / الرقم</th><th>التخصص</th><th>الرسوم / المسدد</th><th>الحالة</th><th>الإجراءات</th></tr></thead><tbody id="studentsBody"></tbody></table></div></div></section>
+<section id="inquiriesPanel" class="admin-section" hidden data-director><div class="panel"><h3>الاستفسارات وطلبات النتائج</h3><p class="feedback" id="inquiriesFeedback" role="status"></p><div id="adminInquiries"></div></div></section>
+<section id="messagesPanel" class="admin-section" hidden data-director><form id="messageForm" class="panel"><h3>رسالة إلى الطلاب</h3><div class="form-group"><label for="messageStudent">المستلم</label><select id="messageStudent" name="studentId"><option value="">جميع الطلاب — إشعار الموقع</option></select></div><div class="form-group"><label for="messageBody">نص الرسالة</label><textarea name="body" id="messageBody" required maxlength="2000"></textarea></div><div class="action-row"><button class="btn btn-primary" name="channel" value="site">إشعار داخل الموقع</button><button class="btn btn-secondary" name="channel" value="whatsapp">فتح واتساب</button><button class="btn btn-secondary" name="channel" value="smsManual">SMS يدوي</button><button class="btn btn-secondary" name="channel" value="sms">SMS آلي</button><button class="btn btn-secondary" name="channel" value="whatsappAuto">واتساب آلي</button><button class="btn btn-secondary" name="channel" value="both">SMS وواتساب معاً</button></div><p class="register-note">إشعارات الموقع تظهر للطالب عند الاستعلام. اختر طالباً واحداً للإرسال إلى الهاتف.</p><p id="messageReadiness" role="status"></p><p class="feedback" role="status"></p></form><div class="panel"><div class="dashboard-bar"><h3>سجل طلبات الإرسال الآلي</h3><button type="button" id="refreshDeliveries" class="btn btn-secondary">تحديث السجل</button></div><div id="deliveryLog"></div></div></section>
+<section id="settingsPanel" class="admin-section" hidden data-director><form id="settingsForm" class="panel"><h3>النصوص والصفحات</h3><div id="siteFields"></div><h3>الألوان والتدرجات</h3><div id="colorFields" class="color-grid"></div><div class="form-group"><label for="gradientAngle">زاوية مزج الألوان</label><input id="gradientAngle" name="gradientAngle" type="range" min="0" max="360"></div><div class="theme-preview">معاينة ألوان الموقع</div><h3>الأقسام الظاهرة في الصفحة الرئيسية</h3><div id="sectionFields" class="action-row"></div><h3>حسابات الإدارة</h3><p>تغيير البريد ينقل صلاحية الدخول إلى صاحب البريد الجديد بعد تفعيله وتأكيده، ويلغي صلاحية البريد السابق.</p><div class="form-row"><div class="form-group"><label for="adminEmail">بريد المدير</label><input type="email" id="adminEmail" name="adminEmail" required></div><div class="form-group"><label for="secretaryEmail">بريد السكرتارية</label><input type="email" id="secretaryEmail" name="secretaryEmail" required></div></div><h3>إعدادات الرسائل الآلية</h3><p>اربط حساب Brevo ثم استخدم مرسلاً معتمداً. لواتساب: اربط رقم الأعمال وقالباً معتمداً يحتوي متغيرات name وmessage وstudent_id.</p><div class="form-row"><div class="form-group"><label for="smsSender">اسم مرسل SMS المعتمد</label><input id="smsSender" name="smsSender" maxlength="15" required></div><div class="form-group"><label for="whatsappSender">رقم واتساب للأعمال المرتبط، مع رمز الدولة</label><input id="whatsappSender" name="whatsappSender" dir="ltr" maxlength="16"></div></div><div class="form-group"><label for="whatsappTemplateId">رقم قالب واتساب المعتمد في Brevo</label><input id="whatsappTemplateId" name="whatsappTemplateId" type="number" min="1" max="100000000"></div><h3>الأقسام والدورات والرسوم</h3><p>اترك الرسوم فارغة للدورات التي تحتاج تسعيراً من الإدارة. حذف الدورة يمنع التسجيل الجديد ويحفظ سجلات طلابها.</p><div id="departmentEditor"></div><button type="button" class="btn btn-secondary" id="addDepartment">إضافة قسم</button><hr><button class="btn btn-primary">حفظ إعدادات الموقع</button><p class="feedback" role="status"></p></form></section></div>
+<dialog id="studentDialog" class="wide-dialog"><div class="dialog-heading"><h2>ملف الطالب</h2><button type="button" id="closeStudentDialog" class="dialog-close" aria-label="إغلاق">×</button></div><div id="studentDetails"></div><form id="paymentForm"><h3>تحديث الرسوم</h3><p>أدخل إجمالي المسدد حتى الآن، شاملاً الدفعات السابقة.</p><div class="form-row"><div class="form-group"><label for="editFee">إجمالي الرسوم (ريال يمني)</label><input type="number" min="0" max="100000000" id="editFee" name="fee"></div><div class="form-group"><label for="editPaid">إجمالي المبلغ المسدد</label><input type="number" min="0" max="100000000" id="editPaid" name="paid" required></div></div><div class="action-row"><button type="button" class="btn btn-secondary" id="markPaid">مسدد الفاتورة</button><button type="button" class="btn btn-secondary" id="markUnpaid">غير مسدد</button></div><div class="form-group"><label for="paymentNote">ملاحظة / سبب التعديل</label><textarea id="paymentNote" name="note" required maxlength="1000" placeholder="تأكيد التحويل أو الدفعة أو تصحيح المبلغ"></textarea></div><button class="btn btn-primary">حفظ وإشعار الطالب</button><p class="feedback" role="status"></p></form><details><summary>سجل تعديلات الرسوم</summary><div id="paymentHistory"></div></details><form id="resultForm" data-director><h3>نتيجة الطالب</h3><div class="form-group"><label for="editResult">النتيجة أو الدرجات</label><textarea id="editResult" name="result" required maxlength="3000"></textarea></div><button class="btn btn-primary">نشر النتيجة وإشعار الطالب</button><p class="feedback" role="status"></p></form></dialog></div></main><!-- Footer -->
+<footer>
+  <img src="/assets/logo-transparent.png" alt="شعار المعهد">
+  <h3>معهد جسور اليمن للتدريب والتأهيل</h3>
+  <p>📍 اليمن - ذمار - خلف سيتي ماكس الجديد - عمارة القوسي</p>
+  <p>📞 <a href="tel:+967771704450" style="color:#fde68a;text-decoration:none;direction:ltr;display:inline-block;">+967 771 704 450</a> | <a href="tel:+967770605960" style="color:#fde68a;text-decoration:none;direction:ltr;display:inline-block;">+967 770 605 960</a></p>
+  <p>💻 الحاسوب | 🗣️ الإنجليزية | 📚 التقوية المنهجية | 🎨 الجرافيكس | 🔐 الأمن السيبراني | 👨‍💻 البرمجة</p>
+  <div class="footer-bottom">© 2026 معهد جسور اليمن للتدريب والتأهيل - جميع الحقوق محفوظة</div>
+</footer>
+
+<!-- WhatsApp Float -->
+<dialog id="contactOptions" aria-labelledby="contactTitle">
+  <div class="dialog-heading"><h2 id="contactTitle">اختر جهة التواصل</h2><button type="button" class="dialog-close" aria-label="إغلاق خيارات التواصل">×</button></div>
+  <p>اختر واتساب أو الاتصال الهاتفي</p>
+  <a class="contact-choice" href="https://wa.me/967770605960">واتساب مدير المعهد <bdi>770605960</bdi></a>
+  <a class="contact-choice" href="https://wa.me/967716923341">واتساب شؤون الطلاب <bdi>716923341</bdi></a>
+  <a class="contact-choice" href="tel:+967771704450">اتصال هاتفي <bdi>771704450</bdi></a>
+</dialog>
+<button type="button" class="whatsapp-float" title="خيارات التواصل" aria-label="فتح خيارات واتساب والاتصال" aria-haspopup="dialog" aria-controls="contactOptions"><svg viewBox="0 0 32 32"><path d="M16 3C9.4 3 4 8.4 4 15c0 2.1.6 4.2 1.6 6L4 29l8.2-1.5c1.2.6 2.5.9 3.8.9 6.6 0 12-5.4 12-12S22.6 3 16 3zm6.9 16.9c-.3.8-1.6 1.5-2.3 1.6-.6.1-1.4.1-2.2-.1-.5-.2-1.2-.4-2-.8-3.6-1.5-5.9-5.2-6.1-5.4-.2-.2-1.4-1.9-1.4-3.6s.9-2.6 1.2-2.9c.3-.3.7-.4 1-.4h.7c.2 0 .5-.1.8.6.3.8 1.1 2.6 1.2 2.8.1.2.2.4 0 .7-.1.3-.2.4-.4.7l-.6.7c-.2.2-.4.4-.2.8.2.4 1 1.6 2.1 2.6 1.4 1.3 2.6 1.6 3 1.8.4.2.6.2.8-.1.2-.2.9-1 1.1-1.4.2-.4.5-.3.8-.2.3.1 2.1 1 2.5 1.2.4.2.6.3.7.5.1.2.1 1-.2 1.8z"/></svg></button>
+
+<script src="/assets/site.js" defer></script>
+
+<script type="module" src="/assets/portal.js"></script>
+</body>
+</html>
