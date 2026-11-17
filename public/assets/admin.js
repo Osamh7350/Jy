@@ -1,9 +1,11 @@
 import {api,escapeHTML as h,amount,feedback,busy,applyTheme} from './portal.js';
-import {login,logout,signup,getUser,handleAuthCallback,requestPasswordRecovery,updateUser,acceptInvite} from './vendor/identity.js';
+import {login,logout,signup,getUser,handleAuthCallback,requestPasswordRecovery,updateUser,acceptInvite,refreshSession} from './vendor/identity.js';
 let role,allStudents=[],currentStudent,siteSettings,inviteToken;
 const auth=document.getElementById('authBox'),dashboard=document.getElementById('dashboard'),studentDialog=document.getElementById('studentDialog');
 const authError=e=>e.status===401?'البريد أو كلمة المرور غير صحيحة، أو البريد غير مؤكد.':e.status===422?'تحقق من البريد وكلمة المرور. إذا فعّلت الحساب سابقاً، استخدم استعادة كلمة المرور.':e.status===403?'تعذّر الدخول بهذا الحساب. تحقق من تأكيد البريد وصلاحية الحساب.':'تعذّر إتمام الدخول. تحقق من بياناتك واتصالك، أو استخدم استعادة كلمة المرور.';
 async function enter(){
+ // Renew an expired access token so a returning employee stays signed in instead of being asked to register again.
+ await refreshSession().catch(()=>null);
  const staff=await api('staff/me');role=staff.role;auth.hidden=true;dashboard.hidden=false;document.getElementById('resetBox').hidden=true;
  document.getElementById('staffRole').textContent=(role==='admin'?'المدير — ':'السكرتارية — ')+staff.email;
  document.querySelectorAll('[data-director]').forEach(n=>{if(role!=='admin')n.hidden=true;});
@@ -12,7 +14,9 @@ async function enter(){
 try{const callback=await handleAuthCallback();if(callback?.type==='recovery'||callback?.type==='invite'){inviteToken=callback.token;auth.hidden=true;document.getElementById('resetBox').hidden=false;}else if(await getUser())await enter();}catch(e){feedback(document.getElementById('loginForm'),e.message||'تعذّر استعادة الجلسة.');}
 const loginForm=document.getElementById('loginForm');loginForm.addEventListener('submit',e=>{e.preventDefault();const action=e.submitter?.value;busy(loginForm,async()=>{
  const email=document.getElementById('staffEmail').value.trim(),password=document.getElementById('staffPassword').value;
- try{if(action==='signup'){await signup(email,password);document.getElementById('staffPassword').value='';feedback(loginForm,'تم إرسال طلب تفعيل الحساب. راجع بريدك لتأكيده، ثم عد لتسجيل الدخول.');return;}await login(email,password);document.getElementById('staffPassword').value='';}catch(err){throw new Error(authError(err));}
+ try{if(action==='signup'){let created=true;try{const u=await signup(email,password);if(!u?.emailVerified){document.getElementById('staffPassword').value='';feedback(loginForm,'تم إرسال طلب تفعيل الحساب. راجع بريدك لتأكيده، ثم عد لتسجيل الدخول.');return;}}catch(err){if(err.status!==422&&err.status!==400)throw err;created=false;}
+  // An account that is already activated just signs in; no need to register again.
+  if(!created)await login(email,password);}else await login(email,password);document.getElementById('staffPassword').value='';}catch(err){throw new Error(authError(err));}
  await enter();feedback(loginForm,'');
 });});
 document.getElementById('recoverPassword').addEventListener('click',()=>busy(loginForm,async()=>{const email=document.getElementById('staffEmail');if(!email.reportValidity()||!email.value)return;try{await requestPasswordRecovery(email.value.trim());feedback(loginForm,'إذا كان البريد مسجلاً، تصلك رسالة لاستعادة كلمة المرور.');}catch{throw new Error('تعذّر طلب الاستعادة. تحقق من البريد وحاول مجدداً.');}}));
